@@ -3,14 +3,16 @@ package mocks
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/filters"
-	O "github.com/onsi/gomega"
-	"github.com/onsi/gomega/ghttp"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"path/filepath"
+	"strings"
+
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/filters"
+	O "github.com/onsi/gomega"
+	"github.com/onsi/gomega/ghttp"
 )
 
 func getMockJSONFile(relPath string) ([]byte, error) {
@@ -125,4 +127,30 @@ func getImageHandler(index int) http.HandlerFunc {
 
 func failTestUnless(ok bool) {
 	O.ExpectWithOffset(2, ok).To(O.BeTrue(), "test setup failed")
+}
+
+// RemoveImageHandler mocks the DELETE images/ID endpoint, simulating removal of the given imagesWithParents
+func RemoveImageHandler(imagesWithParents map[string][]string) http.HandlerFunc {
+	return ghttp.CombineHandlers(
+		ghttp.VerifyRequest("DELETE", O.MatchRegexp("/images/.*")),
+		func(w http.ResponseWriter, r *http.Request) {
+			parts := strings.Split(r.URL.Path, `/`)
+			image := parts[len(parts)-1]
+
+			if parents, found := imagesWithParents[image]; found {
+				items := []types.ImageDeleteResponseItem{
+					{Untagged: image},
+					{Deleted: image},
+				}
+				for _, parent := range parents {
+					items = append(items, types.ImageDeleteResponseItem{Deleted: parent})
+				}
+				ghttp.RespondWithJSONEncoded(http.StatusOK, items)(w, r)
+			} else {
+				ghttp.RespondWithJSONEncoded(http.StatusNotFound, struct{ message string }{
+					message: "Something went wrong.",
+				})(w, r)
+			}
+		},
+	)
 }
