@@ -41,6 +41,9 @@ type shoutrrrTypeNotifier struct {
 	data           StaticData
 	receiving      bool
 	delay          time.Duration
+
+	// add WeChat pusher
+	wechatPush *wechatNotifier
 }
 
 // GetScheme returns the scheme part of a Shoutrrr URL
@@ -172,6 +175,9 @@ func (n *shoutrrrTypeNotifier) StartNotification() {
 
 // SendNotification sends the queued up messages as a notification
 func (n *shoutrrrTypeNotifier) SendNotification(report t.Report) {
+	if data := n.wechatPush.generateWechatMsg(n.data, report); data != "" {
+		n.wechatPush.SendMsg(data)
+	}
 	n.sendEntries(n.entries, report)
 	n.entries = nil
 }

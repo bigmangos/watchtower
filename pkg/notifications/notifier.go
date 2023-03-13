@@ -28,7 +28,9 @@ func NewNotifier(c *cobra.Command) ty.Notifier {
 	data := GetTemplateData(c)
 	urls, delay := AppendLegacyUrls(urls, c)
 
-	return createNotifier(urls, logLevel, tplString, !reportTemplate, data, stdout, delay)
+	notifier := createNotifier(urls, logLevel, tplString, !reportTemplate, data, stdout, delay)
+	notifier.wechatPush = newWechatNotifier(c)
+	return notifier
 }
 
 // AppendLegacyUrls creates shoutrrr equivalent URLs from legacy notification flags

@@ -47,7 +47,7 @@ var mockDataAllFresh = Data{
 	Report:  mocks.CreateMockProgressReport(s.FreshState),
 }
 
-func mockDataFromStates(states ...s.State) Data {
+func MockDataFromStates(states ...s.State) Data {
 	hostname := "Mock"
 	prefix := ""
 	return Data{
@@ -78,7 +78,7 @@ var _ = Describe("Shoutrrr", func() {
 			expected := `
 updt1 (mock/updt1:latest): Updated
 `[1:]
-			data := mockDataFromStates(s.UpdatedState)
+			data := MockDataFromStates(s.UpdatedState)
 			Expect(getTemplatedResult(`porcelain.v1.summary-no-log`, false, data)).To(Equal(expected))
 		})
 	})
@@ -210,7 +210,7 @@ updt1 (mock/updt1:latest): Updated
 - frsh1 (mock/frsh1:latest): Fresh
 - skip1 (mock/skip1:latest): Skipped: unpossible
 - fail1 (mock/fail1:latest): Failed: accidentally the whole container`
-				data := mockDataFromStates(s.UpdatedState, s.FreshState, s.FailedState, s.SkippedState, s.UpdatedState)
+				data := MockDataFromStates(s.UpdatedState, s.FreshState, s.FailedState, s.SkippedState, s.UpdatedState)
 				Expect(getTemplatedResult(``, false, data)).To(Equal(expected))
 			})
 
@@ -219,7 +219,7 @@ updt1 (mock/updt1:latest): Updated
 		When("using a template referencing Title", func() {
 			It("should contain the title in the output", func() {
 				expected := `Watchtower updates on Mock`
-				data := mockDataFromStates(s.UpdatedState)
+				data := MockDataFromStates(s.UpdatedState)
 				Expect(getTemplatedResult(`{{ .Title }}`, false, data)).To(Equal(expected))
 			})
 		})
@@ -227,7 +227,7 @@ updt1 (mock/updt1:latest): Updated
 		When("using a template referencing Host", func() {
 			It("should contain the hostname in the output", func() {
 				expected := `Mock`
-				data := mockDataFromStates(s.UpdatedState)
+				data := MockDataFromStates(s.UpdatedState)
 				Expect(getTemplatedResult(`{{ .Host }}`, false, data)).To(Equal(expected))
 			})
 		})
@@ -242,7 +242,7 @@ updt1 (mock/updt1:latest): Updated
 				It("should send a report", func() {
 					expected := `1 Scanned, 1 Updated, 0 Failed
 - updt1 (mock/updt1:latest): 01d110000000 updated to d0a110000000`
-					data := mockDataFromStates(s.UpdatedState)
+					data := MockDataFromStates(s.UpdatedState)
 					Expect(getTemplatedResult(``, false, data)).To(Equal(expected))
 				})
 			})
@@ -250,7 +250,7 @@ updt1 (mock/updt1:latest): Updated
 				It("should send a report", func() {
 					expected := `1 Scanned, 0 Updated, 1 Failed
 - fail1 (mock/fail1:latest): Failed: accidentally the whole container`
-					data := mockDataFromStates(s.FailedState)
+					data := MockDataFromStates(s.FailedState)
 					Expect(getTemplatedResult(``, false, data)).To(Equal(expected))
 				})
 			})
