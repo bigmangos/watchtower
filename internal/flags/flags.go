@@ -338,6 +338,12 @@ Should only be used for testing.`)
 		"The MSTeams notifier will try to extract log entry fields as MSTeams message facts")
 
 	flags.StringP(
+		"notification-wechat-params",
+		"w",
+		viper.GetString("WATCHTOWER_NOTIFICATION_WECHAT_PARAMS"),
+		"The WeChat params to send notifications to")
+
+	flags.StringP(
 		"notification-gotify-url",
 		"",
 		envString("WATCHTOWER_NOTIFICATION_GOTIFY_URL"),

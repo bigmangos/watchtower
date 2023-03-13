@@ -23,6 +23,7 @@ system, [logrus](http://github.com/sirupsen/logrus).
 -   `--notification-title-tag` (env. `WATCHTOWER_NOTIFICATION_TITLE_TAG`): Prefix to include in the title. Useful when running multiple watchtowers.
 -   `--notification-skip-title` (env. `WATCHTOWER_NOTIFICATION_SKIP_TITLE`): Do not pass the title param to notifications. This will not pass a dynamic title override to notification services. If no title is configured for the service, it will remove the title all together.
 -   `--notification-log-stdout` (env. `WATCHTOWER_NOTIFICATION_LOG_STDOUT`): Enable output from `logger://` shoutrrr service to stdout.
+-   `--notification-wechat-params` (env. `WATCHTOWER_NOTIFICATION_WECHAT_PARAMS`): The WeChat params to send notifications to.
 
 ## [shoutrrr](https://github.com/containrrr/shoutrrr) notifications
 
