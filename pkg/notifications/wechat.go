@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	t "github.com/containrrr/watchtower/pkg/types"
-
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -41,7 +40,7 @@ func newWechatNotifier(cmd *cobra.Command) *wechatNotifier {
 
 	params, _ := flags.GetString("notification-wechat-params")
 	if len(params) <= 0 {
-		log.Errorf("Required argument --notification-wechat-params(cli) or WATCHTOWER_NOTIFICATION_WECHAT_PARAMS(env) is empty.")
+		log.Error("Required argument --notification-wechat-params(cli) or WATCHTOWER_NOTIFICATION_WECHAT_PARAMS(env) is empty.")
 		return nil
 	}
 
@@ -76,28 +75,28 @@ func (w *wechatNotifier) SendMsg(msg string) {
 
 	requestBody, err := json.Marshal(&data)
 	if err != nil {
-		log.Fatal("SendMsg marshal send msg body err: ", err)
+		log.Errorf("SendMsg marshal send msg body err: %v", err)
 		return
 	}
 
 	responseBody, err := httpPost(sendMsgUrl+w.getAccessToken(), requestBody)
 	if err != nil {
-		log.Fatal("SendMsg httpPost err: ", err)
+		log.Errorf("SendMsg httpPost err: %v", err)
 		return
 	}
 
 	var rsp SendMspRsp
 	if err = json.Unmarshal(responseBody, &rsp); err != nil {
-		log.Fatal("SendMsg Unmarshal err: ", err)
+		log.Errorf("SendMsg Unmarshal err: %v", err)
 		return
 	}
 
 	if strings.Contains(rsp.ErrMsg, "ok") {
-		log.Error("SendMsg success")
+		log.Info("SendMsg success")
 		return
 	}
 
-	log.Fatal("SendMsg err: ", rsp.ErrMsg)
+	log.Errorf("SendMsg err: %v", rsp.ErrMsg)
 }
 
 func (w *wechatNotifier) getAccessToken() string {
@@ -108,19 +107,19 @@ func (w *wechatNotifier) getAccessToken() string {
 
 	requestBody, err := json.Marshal(&data)
 	if err != nil {
-		log.Fatal("marshal get access token body err: ", err)
+		log.Error("marshal get access token body err: ", err)
 		return ""
 	}
 
 	responseBody, err := httpPost(getTokenUrl, requestBody)
 	if err != nil {
-		log.Fatal("getAccessToken httpPost err: ", err)
+		log.Error("getAccessToken httpPost err: ", err)
 		return ""
 	}
 
 	var rsp GetTokenRsp
 	if err = json.Unmarshal(responseBody, &rsp); err != nil {
-		log.Fatal("Unmarshal err: ", err)
+		log.Error("Unmarshal err: ", err)
 		return ""
 	}
 
@@ -129,39 +128,74 @@ func (w *wechatNotifier) getAccessToken() string {
 
 func (w *wechatNotifier) generateWechatMsg(data StaticData, reportData t.Report) string {
 	if w == nil {
+		log.Info("wechatNotifier is nil")
 		return ""
 	}
 
-	var report jsonMap
-	if reportData != nil {
-		report = jsonMap{
-			`scanned`: marshalReports(reportData.Scanned()),
-			`updated`: marshalReports(reportData.Updated()),
-			`failed`:  marshalReports(reportData.Failed()),
-			`skipped`: marshalReports(reportData.Skipped()),
-			`stale`:   marshalReports(reportData.Stale()),
-			`fresh`:   marshalReports(reportData.Fresh()),
+	if reportData == nil {
+		log.Info("reportData is nil")
+		return data.Title + "\n\n" + "启动成功..."
+	}
+
+	updates := reportData.Updated()
+	fails := reportData.Failed()
+	if len(updates) == 0 && len(fails) == 0 {
+		log.Info("updates and fails are nil")
+		return ""
+	}
+
+	var buf strings.Builder
+	buf.WriteString(data.Title + "\n\n")
+	if len(updates) > 0 {
+		buf.WriteString("已更新: " + "\n")
+		for _, update := range updates {
+			buf.WriteString(strings.Replace(update.Name(), "/", "", -1) + " + " + update.ImageName() + "\n")
 		}
+		buf.WriteString("\n")
 	}
 
-	jsonData, err := json.Marshal(jsonMap{
-		`report`: report,
-		`title`:  data.Title,
-		`host`:   data.Host,
-	})
-	if err != nil {
-		log.Fatal("generateWechatMsg marshal err: ", err)
-		return ""
+	if len(fails) > 0 {
+		buf.WriteString("更新失败: " + "\n")
+		for _, fail := range fails {
+			buf.WriteString(strings.ReplaceAll(fail.Name(), "/", "") + " + " + fail.ImageName() + "\n")
+		}
+		buf.WriteString("\n")
 	}
 
-	return string(jsonData)
+	freshs := reportData.Fresh()
+	if len(freshs) > 0 {
+		buf.WriteString("已刷新: " + "\n")
+		for _, fresh := range freshs {
+			buf.WriteString(strings.ReplaceAll(fresh.Name(), "/", "") + " + " + fresh.ImageName() + "\n")
+		}
+		buf.WriteString("\n")
+	}
+
+	skips := reportData.Skipped()
+	if len(skips) > 0 {
+		buf.WriteString("已跳过: " + "\n")
+		for _, skip := range skips {
+			buf.WriteString(strings.ReplaceAll(skip.Name(), "/", "") + " + " + skip.ImageName() + "\n")
+		}
+		buf.WriteString("\n")
+	}
+
+	stales := reportData.Stale()
+	if len(stales) > 0 {
+		buf.WriteString("正在跟踪: " + "\n")
+		for _, stale := range stales {
+			buf.WriteString(strings.ReplaceAll(stale.Name(), "/", "") + " + " + stale.ImageName() + "\n")
+		}
+		buf.WriteString("\n")
+	}
+
+	return buf.String()
 }
 
 func httpPost(url string, data []byte) ([]byte, error) {
 	client := &http.Client{}
 	request, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
 	if err != nil {
-		log.Fatal("NewRequest err: ", err)
 		return nil, err
 	}
 
