@@ -50,6 +50,13 @@ type ContainerStatus struct {
 	cooldownRemaining string            // Human-readable remaining time (empty if passed).
 }
 
+func NewContainerStatus(containerName, imageName string) *ContainerStatus {
+	return &ContainerStatus{
+		containerName: containerName,
+		imageName:     imageName,
+	}
+}
+
 // ID returns the container ID.
 //
 // Returns:
