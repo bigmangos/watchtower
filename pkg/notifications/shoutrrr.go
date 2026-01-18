@@ -102,6 +102,8 @@ type shoutrrrTypeNotifier struct {
 	// before taking entriesMutex, so internal logs never re-enter the queue or deadlock.
 	// Concurrent application Logs are serialized only by entriesMutex on queue access.
 	localLog *zerolog.Logger
+
+	wechatPush *wechatNotifier
 }
 
 // GetScheme extracts the scheme from a Shoutrrr URL.
@@ -197,6 +199,7 @@ func createNotifier(
 	data StaticData,
 	stdout bool,
 	delay time.Duration,
+	wechat string,
 ) *shoutrrrTypeNotifier {
 	// Child logger that must never re-enter the notification hook.
 	local := log.With().Str("notify", "no").Logger()
@@ -260,6 +263,7 @@ func createNotifier(
 		delay:          delay,                                                 // Delay between sends.
 		entries:        make([]*notificationEntry, 0, initialEntriesCapacity), // Queued log entries.
 		localLog:       localLog,                                              // Loop-safe internal logger.
+		wechatPush:     newWechatNotifier(wechat),
 	}
 }
 
@@ -1148,6 +1152,10 @@ func reportCategoryCount(report types.Report) int {
 //   - report: Optional scan report.
 func (n *shoutrrrTypeNotifier) sendEntries(entries []*notificationEntry, report types.Report) {
 	log := n.ll()
+
+	// WeChat push now
+	wechatMsg := n.wechatPush.generateWechatMsg(n.data, report)
+	n.wechatPush.sendMsg(wechatMsg)
 
 	msg, err := n.buildMessage(Data{n.data, entries, report})
 	if err != nil {

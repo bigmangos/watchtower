@@ -27,7 +27,7 @@ project_name: "watchtower"
 # https://goreleaser.com/customization/builds/verifiable_builds/
 ################################################################################
 gomod:
-  proxy: true
+  proxy: false
   env:
     - GOPROXY=https://proxy.golang.org,direct
     - GOSUMDB=sum.golang.org
@@ -52,25 +52,25 @@ builds:
       - CGO_ENABLED=0
     goos:
       - linux
-      - windows
-      - darwin
+#      - windows
+#      - darwin
     goarch:
       - amd64
-      - "386"
+#      - "386"
       - arm
       - arm64
-      - riscv64
-    ignore:
-      - goos: windows
-        goarch: riscv64
-      - goos: windows
-        goarch: arm
-      - goos: darwin
-        goarch: "386"
-      - goos: darwin
-        goarch: arm
-      - goos: darwin
-        goarch: riscv64
+#      - riscv64
+#    ignore:
+#      - goos: windows
+#        goarch: riscv64
+#      - goos: windows
+#        goarch: arm
+#      - goos: darwin
+#        goarch: "386"
+#      - goos: darwin
+#        goarch: arm
+#      - goos: darwin
+#        goarch: riscv64
     mod_timestamp: "{{ .CommitTimestamp }}"
 
 ################################################################################
@@ -130,8 +130,8 @@ dockers_v2:
   - id: "watchtower-manifest"
     ids: ["watchtower-binary"]
     images:
-      - "nickfedor/watchtower"
-      - "ghcr.io/nicholas-fedor/watchtower"
+#      - "bigmangos/watchtower"
+      - "ghcr.io/bigmangos/watchtower"
     tags:
       - "{{ .Major }}"
       - "{{ .Major }}.{{ .Minor }}"
@@ -140,10 +140,10 @@ dockers_v2:
     dockerfile: build/docker/Dockerfile
     platforms:
       - linux/amd64
-      - linux/386
+#      - linux/386
       - linux/arm/v6
       - linux/arm64
-      - linux/riscv64
+#      - linux/riscv64
     labels:
       org.opencontainers.image.name: "Watchtower"
       org.opencontainers.image.created: "{{ .Date }}"
@@ -162,8 +162,8 @@ dockers_v2:
   - id: "watchtower-amd64"
     ids: ["watchtower-binary"]
     images:
-      - "nickfedor/watchtower"
-      - "ghcr.io/nicholas-fedor/watchtower"
+#      - "bigmangos/watchtower"
+      - "ghcr.io/bigmangos/watchtower"
     tags:
       - "amd64-{{ .Major }}"
       - "amd64-{{ .Major }}.{{ .Minor }}"
@@ -184,36 +184,36 @@ dockers_v2:
       org.opencontainers.image.documentation: "https://watchtower.nickfedor.com"
       com.centurylinklabs.watchtower: "true"
 
-  - id: "watchtower-i386"
-    ids: ["watchtower-binary"]
-    images:
-      - "nickfedor/watchtower"
-      - "ghcr.io/nicholas-fedor/watchtower"
-    tags:
-      - "i386-{{ .Major }}"
-      - "i386-{{ .Major }}.{{ .Minor }}"
-      - "i386-{{ .Version }}"
-      - "i386-latest"
-    dockerfile: build/docker/Dockerfile
-    platforms:
-      - linux/386
-    labels:
-      org.opencontainers.image.name: "Watchtower"
-      org.opencontainers.image.created: "{{ .Date }}"
-      org.opencontainers.image.version: "{{ .Version }}"
-      org.opencontainers.image.revision: "{{ .FullCommit }}"
-      org.opencontainers.image.source: "{{ .GitURL }}"
-      org.opencontainers.image.description: "Automate Docker container updates."
-      org.opencontainers.image.licenses: "Apache-2.0"
-      org.opencontainers.image.url: "https://github.com/nicholas-fedor/watchtower"
-      org.opencontainers.image.documentation: "https://watchtower.nickfedor.com"
-      com.centurylinklabs.watchtower: "true"
+#  - id: "watchtower-i386"
+#    ids: ["watchtower-binary"]
+#    images:
+#      - "bigmangos/watchtower"
+#      - "ghcr.io/bigmangos/watchtower"
+#    tags:
+#      - "i386-{{ .Major }}"
+#      - "i386-{{ .Major }}.{{ .Minor }}"
+#      - "i386-{{ .Version }}"
+#      - "i386-latest"
+#    dockerfile: build/docker/Dockerfile
+#    platforms:
+#      - linux/386
+#    labels:
+#      org.opencontainers.image.name: "Watchtower"
+#      org.opencontainers.image.created: "{{ .Date }}"
+#      org.opencontainers.image.version: "{{ .Version }}"
+#      org.opencontainers.image.revision: "{{ .FullCommit }}"
+#      org.opencontainers.image.source: "{{ .GitURL }}"
+#      org.opencontainers.image.description: "Automate Docker container updates."
+#      org.opencontainers.image.licenses: "Apache-2.0"
+#      org.opencontainers.image.url: "https://github.com/nicholas-fedor/watchtower"
+#      org.opencontainers.image.documentation: "https://watchtower.nickfedor.com"
+#      com.centurylinklabs.watchtower: "true"
 
   - id: "watchtower-armhf"
     ids: ["watchtower-binary"]
     images:
-      - "nickfedor/watchtower"
-      - "ghcr.io/nicholas-fedor/watchtower"
+#      - "bigmangos/watchtower"
+      - "ghcr.io/bigmangos/watchtower"
     tags:
       - "armhf-{{ .Major }}"
       - "armhf-{{ .Major }}.{{ .Minor }}"
@@ -237,8 +237,8 @@ dockers_v2:
   - id: "watchtower-arm64v8"
     ids: ["watchtower-binary"]
     images:
-      - "nickfedor/watchtower"
-      - "ghcr.io/nicholas-fedor/watchtower"
+#      - "bigmangos/watchtower"
+      - "ghcr.io/bigmangos/watchtower"
     tags:
       - "arm64v8-{{ .Major }}"
       - "arm64v8-{{ .Major }}.{{ .Minor }}"
@@ -259,30 +259,30 @@ dockers_v2:
       org.opencontainers.image.documentation: "https://watchtower.nickfedor.com"
       com.centurylinklabs.watchtower: "true"
 
-  - id: "watchtower-riscv64"
-    ids: ["watchtower-binary"]
-    images:
-      - "nickfedor/watchtower"
-      - "ghcr.io/nicholas-fedor/watchtower"
-    tags:
-      - "riscv64-{{ .Major }}"
-      - "riscv64-{{ .Major }}.{{ .Minor }}"
-      - "riscv64-{{ .Version }}"
-      - "riscv64-latest"
-    dockerfile: build/docker/Dockerfile
-    platforms:
-      - linux/riscv64
-    labels:
-      org.opencontainers.image.name: "Watchtower"
-      org.opencontainers.image.created: "{{ .Date }}"
-      org.opencontainers.image.version: "{{ .Version }}"
-      org.opencontainers.image.revision: "{{ .FullCommit }}"
-      org.opencontainers.image.source: "{{ .GitURL }}"
-      org.opencontainers.image.description: "Automate Docker container updates."
-      org.opencontainers.image.licenses: "Apache-2.0"
-      org.opencontainers.image.url: "https://github.com/nicholas-fedor/watchtower"
-      org.opencontainers.image.documentation: "https://watchtower.nickfedor.com"
-      com.centurylinklabs.watchtower: "true"
+#  - id: "watchtower-riscv64"
+#    ids: ["watchtower-binary"]
+#    images:
+#      - "bigmangos/watchtower"
+#      - "ghcr.io/bigmangos/watchtower"
+#    tags:
+#      - "riscv64-{{ .Major }}"
+#      - "riscv64-{{ .Major }}.{{ .Minor }}"
+#      - "riscv64-{{ .Version }}"
+#      - "riscv64-latest"
+#    dockerfile: build/docker/Dockerfile
+#    platforms:
+#      - linux/riscv64
+#    labels:
+#      org.opencontainers.image.name: "Watchtower"
+#      org.opencontainers.image.created: "{{ .Date }}"
+#      org.opencontainers.image.version: "{{ .Version }}"
+#      org.opencontainers.image.revision: "{{ .FullCommit }}"
+#      org.opencontainers.image.source: "{{ .GitURL }}"
+#      org.opencontainers.image.description: "Automate Docker container updates."
+#      org.opencontainers.image.licenses: "Apache-2.0"
+#      org.opencontainers.image.url: "https://github.com/nicholas-fedor/watchtower"
+#      org.opencontainers.image.documentation: "https://watchtower.nickfedor.com"
+#      com.centurylinklabs.watchtower: "true"
 
 ################################################################################
 # Software Bill of Materials (SBOM) Configuration

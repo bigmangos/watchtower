@@ -74,7 +74,7 @@ func createTestNotifier(
 	stdout bool,
 	delay time.Duration,
 ) *shoutrrrTypeNotifier {
-	return createNotifier(testLogger(), urls, level, "", legacy, data, stdout, delay)
+	return createNotifier(testLogger(), urls, level, "", legacy, data, stdout, delay, "")
 }
 
 // TODO: Remove legacyMockData when legacy notification types are removed.
@@ -1713,6 +1713,7 @@ func TestCreateNotifier_FatalsOnBadURL(t *testing.T) {
 			StaticData{},
 			false,
 			0,
+			"",
 		)
 
 		// If we reach here, the fatal did not exit.
@@ -2100,10 +2101,10 @@ func TestCreateNotifier_InvalidTemplateFallsBackToDefault(t *testing.T) {
 
 	for _, legacy := range []bool{true, false} {
 		t.Run(fmt.Sprintf("legacy=%t", legacy), func(t *testing.T) {
-			invalid := createNotifier(testLogger(), []string{}, zerolog.TraceLevel, "{{ .Broken", legacy, StaticData{}, false, 0)
+			invalid := createNotifier(testLogger(), []string{}, zerolog.TraceLevel, "{{ .Broken", legacy, StaticData{}, false, 0, "")
 			t.Cleanup(invalid.Close)
 
-			fallback := createNotifier(testLogger(), []string{}, zerolog.TraceLevel, "", legacy, StaticData{}, false, 0)
+			fallback := createNotifier(testLogger(), []string{}, zerolog.TraceLevel, "", legacy, StaticData{}, false, 0, "")
 			t.Cleanup(fallback.Close)
 
 			want, err := fallback.buildMessage(data)

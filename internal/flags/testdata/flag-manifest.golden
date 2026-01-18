@@ -702,6 +702,14 @@
   list-parse: none
   hidden: false
   deprecated: "Use --notification-url with a teams:// URL."
+--notification-wechat-params
+  shorthand: ""
+  kind: string
+  default: ""
+  env: WATCHTOWER_NOTIFICATION_WECHAT_PARAMS
+  list-parse: none
+  hidden: false
+  deprecated: "Use --notification-url with a wechat:// URL."
 --notification-gotify-url
   shorthand: ""
   kind: string

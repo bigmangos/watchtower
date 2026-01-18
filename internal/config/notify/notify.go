@@ -44,6 +44,8 @@ type Notify struct {
 	// EmailSubjectTag is the deprecated email subject tag fallback when TitleTag is empty
 	// (--notification-email-subjecttag / WATCHTOWER_NOTIFICATION_EMAIL_SUBJECTTAG).
 	EmailSubjectTag string
+	// Wechat is the WeChat notification URL (--notification-wechat / WATCHTOWER_NOTIFICATION_WECHAT).
+	Wechat string
 	// Legacy holds deprecated per-type notification settings used only when LegacyTypes is set.
 	Legacy Legacy
 }

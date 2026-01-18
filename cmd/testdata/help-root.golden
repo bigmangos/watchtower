@@ -102,6 +102,7 @@ Flags:
       --notification-template-file string           Path to a file containing the Shoutrrr text/template for the messages
       --notification-title-tag string               Title prefix tag for notifications
       --notification-url stringArray                The shoutrrr URL to send notifications to
+      --notification-wechat-params string           The WeChat params to send notifications to (DEPRECATED: Use --notification-url with a wechat:// URL.)
   -n, --notifications strings                       Notification types to send [legacy types (email, slack, msteams, gotify)]. (DEPRECATED: Use --notification-url with the appropriate Shoutrrr URL scheme instead.)
       --notifications-delay int                     Delay before sending notifications, expressed in seconds
       --notifications-hostname string               Custom hostname for notification titles
