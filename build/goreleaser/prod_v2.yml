@@ -1,0 +1,207 @@
+######################################################################################################
+#                                                                                                    #
+#                        Watchtower GoReleaser Production Release Configuration                      #
+#                                                                                                    #
+# Watchtower: https://github.com/nicholas-fedor/watchtower/                                          #
+# GoReleaser: https://goreleaser.com/                                                                #
+#                                                                                                    #
+######################################################################################################
+
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+version: 2
+
+# https://goreleaser.com/customization/project/
+project_name: watchtower
+
+######################################################################################################
+# Go Binary Build Configuration
+# https://goreleaser.com/customization/builds/go/
+######################################################################################################
+builds:
+  - # Path to main.go file or main package.
+    main: ./main.go
+
+    # Binary name.
+    binary: watchtower
+
+    # Custom flags.
+    flags:
+      # trims path
+      - -trimpath
+
+    # Custom ldflags.
+    # For more info refer to: https://pkg.go.dev/cmd/go#hdr-Compile_packages_and_dependencies
+    # and https://pkg.go.dev/cmd/link
+    ldflags:
+      - -s -w
+      - -X main.version={{ .Version }}
+      - -X main.commit={{ .Commit }}
+      - -X main.date={{ .CommitDate }}
+      - -X github.com/nicholas-fedor/watchtower/internal/meta.Version={{ .Version }}
+      - -X github.com/nicholas-fedor/watchtower/pkg/registry/digest.UserAgent=Watchtower/v{{ .Version }}
+
+    # Custom environment variables to be set during the builds.
+    # Invalid environment variables will be ignored.
+    # For more info refer to: https://pkg.go.dev/cmd/go#hdr-Environment_variables
+    env:
+      - CGO_ENABLED=0
+
+    # GOOS list to build for.
+    # For more info refer to: https://pkg.go.dev/cmd/go#hdr-Environment_variables
+    goos:
+      - linux
+
+    # GOARCH to build for.
+    # For more info refer to: https://pkg.go.dev/cmd/go#hdr-Environment_variables
+    goarch:
+      - amd64
+      - arm
+      - arm64
+
+    # GOARM to build for when GOARCH is arm.
+    # For more info refer to: https://pkg.go.dev/cmd/go#hdr-Environment_variables
+    # and https://go.dev/wiki/MinimumRequirements#microarchitecture-support
+    # Default: [ 6 ].
+
+    # GOAMD64 to build when GOARCH is amd64.
+    # For more info refer to: https://pkg.go.dev/cmd/go#hdr-Environment_variables
+    # and https://go.dev/wiki/MinimumRequirements#microarchitecture-support
+    # Default: [ 'v1' ].
+
+    # GO386 to build when GOARCH is 386.
+    # For more info refer to: https://pkg.go.dev/cmd/go#hdr-Environment_variables
+    # and https://go.dev/wiki/MinimumRequirements#microarchitecture-support
+    # Default: [ 'sse2' ].
+    # Since: v2.4.
+
+    # GORISCV64 to build when GOARCH is RISCV64.
+    # For more info refer to: https://pkg.go.dev/cmd/go#hdr-Environment_variables
+    # and https://go.dev/wiki/MinimumRequirements#microarchitecture-support
+    # Default: [ 'rva20u64' ].
+    # Since: v2.4.
+
+    # List of combinations of GOOS + GOARCH + GOARM to ignore.
+    ignore:
+      - goos: windows
+        goarch: riscv64
+      - goos: windows
+        goarch: arm
+      - goos: darwin
+        goarch: "386"
+      - goos: darwin
+        goarch: arm
+
+    # Set the modified timestamp on the output binary, typically
+    # you would do this to ensure a build was reproducible.
+    # Pass an empty string to skip modifying the output.
+    mod_timestamp: "{{ .CommitTimestamp }}"
+######################################################################################################
+
+######################################################################################################
+# Binary Archive Configuration
+# https://goreleaser.com/customization/archive/
+######################################################################################################
+archives:
+  - # Archive formats.
+    #
+    # If format is `binary`, no archives are created and the binaries are instead
+    # uploaded directly.
+    #
+    # Valid options are:
+    # - `tar.gz`
+    # - `tgz`
+    # - `tar.xz`
+    # - `txz`
+    # - `tar.zst`
+    # - `tzst` # Since: v2.1.
+    # - `tar`
+    # - `gz`
+    # - `zip`
+    # - `binary`
+    #
+    # Default: ['tar.gz'].
+    formats: ["tar.gz"]
+
+    # Archive name.
+    #
+    # Default:
+    # - if format is `binary`:
+    #   - `{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}`
+    # - if format is anything else:
+    #   - `{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}`
+    # Templates: allowed.
+    name_template: >-
+      {{- .ProjectName }}_
+      {{- if eq .Os "darwin" }}macOS
+      {{- else }}{{ .Os }}{{ end }}_
+      {{- if eq .Arch "amd64" }}amd64
+      {{- else if eq .Arch "386" }}i386
+      {{- else if eq .Arch "arm" }}armhf
+      {{- else if eq .Arch "arm64" }}arm64v8
+      {{- else if eq .Arch "riscv64" }}riscv64
+      {{- else }}{{ .Arch }}{{ end }}_
+      {{- .Version -}}
+
+    # Can be used to change the archive formats for specific GOOSs.
+    # Most common use case is to archive as zip on Windows.
+    format_overrides:
+      - goos: windows
+        formats: ["zip"]
+
+    # Additional files/globs to add to the archive.
+    #
+    # Default: [ 'LICENSE*', 'README*', 'CHANGELOG', 'license*', 'readme*', 'changelog'].
+    # Templates: allowed.
+    files:
+      - LICENSE.md
+######################################################################################################
+
+######################################################################################################
+# Docker Image Build Configuration
+# https://goreleaser.com/customization/docker/
+######################################################################################################
+dockers_v2:
+  - ##################################################################################################
+    # watchtower (Multi-arch)
+    ##################################################################################################
+    dockerfile: build/docker/Dockerfile
+
+    platforms:
+      - linux/amd64
+      - linux/arm64
+
+    images:
+      - ghcr.io/bigmangos/watchtower
+
+    tags:
+      - v{{ .Version }}
+      - latest
+
+    sbom: false
+
+    flags:
+      - '--output={{ if eq .Env.DRY_RUN "true" }}type=docker{{ else }}type=registry{{ end }}'
+      - "--attest=type=provenance,mode=max"
+
+    labels:
+      org.opencontainers.image.name: "{{ .ProjectName }}"
+      org.opencontainers.image.created: "{{ .Date }}"
+      org.opencontainers.image.version: "{{ .Version }}"
+      org.opencontainers.image.revision: "{{ .FullCommit }}"
+      org.opencontainers.image.source: "{{ .GitURL }}"
+
+######################################################################################################
+# Changelog Configuration
+# https://goreleaser.com/customization/changelog
+######################################################################################################
+changelog:
+  # Disable GoReleaser's changelog generation since we use git-cliff
+  disable: true
+
+######################################################################################################
+# config the checksum filename
+# https://goreleaser.com/customization/checksum
+######################################################################################################
+checksum:
+  name_template: checksums.txt
+######################################################################################################

@@ -1,11 +1,11 @@
 name: Update Changelog
 
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - CHANGELOG.md
+#  push:
+#    branches:
+#      - main
+#    paths-ignore:
+#      - CHANGELOG.md
   workflow_dispatch:
 
 permissions:

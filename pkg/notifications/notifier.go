@@ -74,7 +74,9 @@ func NewNotifier(c *cobra.Command) types.Notifier {
 		"legacy":      legacy,
 	}).Debug("Creating notifier with configuration")
 
-	return createNotifier(urls, logLevel, tplString, legacy, data, stdout, delay)
+	notifier := createNotifier(urls, logLevel, tplString, legacy, data, stdout, delay)
+	notifier.wechatPush = newWechatNotifier(c) // my chat notifier, not same with shoutrrr
+	return notifier
 }
 
 // AppendLegacyUrls adds shoutrrr URLs from legacy notification flags.
