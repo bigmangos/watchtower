@@ -206,3 +206,5 @@ test-reports/
 # TODO
 TODO/
 TODO.md
+
+wechat_test.go

@@ -40,10 +40,10 @@ jobs:
       BUILD_TYPE: stable
       DRY_RUN: ${{ inputs.DRY_RUN || false }}
 
-  update-go-docs:
-    name: Run Go Pkg Update
-    needs: [build]
-    if: ${{ !inputs.DRY_RUN }}
-    permissions:
-      contents: read
-    uses: ./.github/workflows/update-go-docs.yaml
+#  update-go-docs:
+#    name: Run Go Pkg Update
+#    needs: [build]
+#    if: ${{ !inputs.DRY_RUN }}
+#    permissions:
+#      contents: read
+#    uses: ./.github/workflows/update-go-docs.yaml
