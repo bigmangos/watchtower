@@ -391,6 +391,7 @@ func loadNotify(vip *viper.Viper, flagSet *pflag.FlagSet) notify.Notify {
 		Hostname:         vip.GetString("notifications-hostname"),
 		TitleTag:         vip.GetString("notification-title-tag"),
 		EmailSubjectTag:  vip.GetString("notification-email-subjecttag"),
+		Wechat:           vip.GetString("notification-wechat-params"),
 		Legacy: notify.Legacy{
 			EmailFrom:           vip.GetString("notification-email-from"),
 			EmailTo:             vip.GetString("notification-email-to"),
