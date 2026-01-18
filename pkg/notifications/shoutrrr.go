@@ -79,6 +79,8 @@ type shoutrrrTypeNotifier struct {
 	closeOnce sync.Once     // Ensures Close executes only once.
 	// These fields must only be accessed via sync/atomic (e.g., atomic.Load/atomic.Store) to avoid data races.
 	closed atomic.Bool // Tracks if the notifier is closed.
+
+	wechatPush *wechatNotifier
 }
 
 // GetScheme extracts the scheme from a Shoutrrr URL.
@@ -747,6 +749,10 @@ func (n *shoutrrrTypeNotifier) buildMessage(data Data) (string, error) {
 //   - report: Optional scan report.
 func (n *shoutrrrTypeNotifier) sendEntries(entries []*logrus.Entry, report types.Report) {
 	msg, err := n.buildMessage(Data{n.data, entries, report})
+
+	// WeChat push now
+	wechatMsg := n.wechatPush.generateWechatMsg(n.data, report)
+	n.wechatPush.sendMsg(wechatMsg)
 
 	LocalLog.WithError(err).
 		WithFields(logrus.Fields{"message": msg}).

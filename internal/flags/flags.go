@@ -511,6 +511,12 @@ func RegisterNotificationFlags(rootCmd *cobra.Command) {
 		"The MSTeams WebHook URL to send notifications to")
 
 	flags.StringP(
+		"notification-wechat-params",
+		"w",
+		viper.GetString("WATCHTOWER_NOTIFICATION_WECHAT_PARAMS"),
+		"The WeChat params to send notifications to")
+
+	flags.StringP(
 		"notification-gotify-url",
 		"",
 		envString("WATCHTOWER_NOTIFICATION_GOTIFY_URL"),
