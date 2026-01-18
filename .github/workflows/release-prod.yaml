@@ -33,31 +33,31 @@ jobs:
     with:
       build-type: prod # Production release.
       dry-run: ${{ fromJson(inputs.dry-run || 'false') }} # String to boolean, defaults false
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }} # Docker Hub username
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }} # Docker Hub token
+#    secrets:
+#      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }} # Docker Hub username
+#      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }} # Docker Hub token
 
   # Create multi-platform manifests
-  manifest:
-    # Runs after build
-    needs: build
-    # Skips in dry-run
-    if: ${{ !fromJson(inputs.dry-run || 'false') }}
-    permissions:
-      contents: read # For code checkout
-      packages: write # For pushing manifests
-    uses: ./.github/workflows/create-manifests.yaml
-    secrets: inherit
-    with:
-      build-type: prod # Tags images with version and latest
-      version: ${{ github.ref_name }} # Tag name (e.g., v1.2.3)
-
-  # Update pkg.go.dev
-  update-go-docs:
-    # Runs after all jobs
-    needs: [test, build, manifest]
-    # Skips in dry-run
-    if: ${{ !fromJson(inputs.dry-run || 'false') }}
-    permissions:
-      contents: read # For code checkout
-    uses: ./.github/workflows/update-go-docs.yaml
+#  manifest:
+#    # Runs after build
+#    needs: build
+#    # Skips in dry-run
+#    if: ${{ !fromJson(inputs.dry-run || 'false') }}
+#    permissions:
+#      contents: read # For code checkout
+#      packages: write # For pushing manifests
+#    uses: ./.github/workflows/create-manifests.yaml
+#    secrets: inherit
+#    with:
+#      build-type: prod # Tags images with version and latest
+#      version: ${{ github.ref_name }} # Tag name (e.g., v1.2.3)
+#
+#  # Update pkg.go.dev
+#  update-go-docs:
+#    # Runs after all jobs
+#    needs: [test, build, manifest]
+#    # Skips in dry-run
+#    if: ${{ !fromJson(inputs.dry-run || 'false') }}
+#    permissions:
+#      contents: read # For code checkout
+#    uses: ./.github/workflows/update-go-docs.yaml
