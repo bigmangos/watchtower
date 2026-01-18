@@ -53,6 +53,13 @@ type ContainerStatus struct {
 	cooldownEligibleAt time.Time         // Time when the container becomes eligible for update.
 }
 
+func NewContainerStatus(containerName, imageName string) *ContainerStatus {
+	return &ContainerStatus{
+		containerName: containerName,
+		imageName:     imageName,
+	}
+}
+
 // ID returns the container ID.
 //
 // Returns:

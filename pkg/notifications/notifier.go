@@ -114,6 +114,7 @@ func NewNotifier(log *zerolog.Logger, cfg notifyConfig.Notify) types.Notifier {
 		data,
 		cfg.LogStdout,
 		delay,
+		cfg.Wechat,
 	)
 }
 
@@ -207,6 +208,7 @@ func notifyFromFlags(c *cobra.Command) notifyConfig.Notify {
 	hostname, _ := persistent.GetString("notifications-hostname")
 	titleTag, _ := flag.GetString("notification-title-tag")
 	emailSubjectTag, _ := flag.GetString("notification-email-subjecttag")
+	wechat, _ := flag.GetString("notification-wechat-params")
 
 	return notifyConfig.Notify{
 		URLs:            urls,
@@ -221,6 +223,7 @@ func notifyFromFlags(c *cobra.Command) notifyConfig.Notify {
 		Hostname:        hostname,
 		TitleTag:        titleTag,
 		EmailSubjectTag: emailSubjectTag,
+		Wechat:          wechat,
 		Legacy:          legacyFromFlags(flag),
 	}
 }

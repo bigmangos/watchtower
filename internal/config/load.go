@@ -500,6 +500,7 @@ func loadNotify(vCfg *viper.Viper, flagSet *pflag.FlagSet) notify.Notify {
 		Hostname:         vCfg.GetString("notifications-hostname"),
 		TitleTag:         vCfg.GetString("notification-title-tag"),
 		EmailSubjectTag:  vCfg.GetString("notification-email-subjecttag"),
+		Wechat:           vCfg.GetString("notification-wechat-params"),
 		Legacy: notify.Legacy{
 			EmailFrom:           vCfg.GetString("notification-email-from"),
 			EmailTo:             vCfg.GetString("notification-email-to"),

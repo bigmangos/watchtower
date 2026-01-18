@@ -14,8 +14,8 @@ on:
         required: false
         default: false
         type: boolean
-  schedule:
-    - cron: "0 0 * * *"
+#  schedule:
+#    - cron: "0 0 * * *"
 
 permissions:
   contents: read # Set default read-only permissions
