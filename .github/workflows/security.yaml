@@ -12,8 +12,8 @@ on:
       - main.go
       - go.mod
       - go.sum
-  schedule:
-    - cron: "0 0 * * *"
+#  schedule:
+#    - cron: "0 0 * * *"
 
 env:
   OUTPUT_FILE: results.sarif
