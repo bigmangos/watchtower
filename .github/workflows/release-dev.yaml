@@ -42,9 +42,9 @@ jobs:
     with:
       build-type: dev # Development snapshot release
       dry-run: ${{ fromJson(inputs.dry-run || 'false') }} # String to boolean, defaults false
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }} # Docker Hub username
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }} # Docker Hub token
+#    secrets:
+#      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }} # Docker Hub username
+#      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }} # Docker Hub token
 
 
   # Create multi-platform manifests
