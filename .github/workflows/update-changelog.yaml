@@ -4,7 +4,7 @@ name: Update Changelog
 on:
   push:
     branches:
-      - main
+      - main1 # no need update
     paths-ignore:
       - CHANGELOG.md
   workflow_dispatch:

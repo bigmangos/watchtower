@@ -71,7 +71,7 @@ func createTestNotifier(
 	stdout bool,
 	delay time.Duration,
 ) *shoutrrrTypeNotifier {
-	return createNotifier(testLogger(), urls, level, "", legacy, data, stdout, delay)
+	return createNotifier(testLogger(), urls, level, "", legacy, data, stdout, delay, "")
 }
 
 // TODO: Remove legacyMockData when legacy notification types are removed.
@@ -1471,6 +1471,7 @@ func TestCreateNotifier_FatalsOnBadURL(t *testing.T) {
 			StaticData{},
 			false,
 			0,
+			"",
 		)
 
 		// If we reach here, the fatal did not exit.

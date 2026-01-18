@@ -226,6 +226,14 @@ func Specs() []spec.FlagSpec {
 			Help:       "The MSTeams WebHook URL to send notifications to",
 		},
 		{
+			Name:       "notification-wechat-params",
+			Kind:       spec.KindString,
+			Default:    "",
+			EnvKeys:    []string{"WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN"},
+			Deprecated: "Use --notification-url with a wechat:// URL.",
+			Help:       "The WeChat params to send notifications to",
+		},
+		{
 			Name:       "notification-gotify-url",
 			Kind:       spec.KindString,
 			Default:    "",
