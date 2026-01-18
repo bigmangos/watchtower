@@ -13,11 +13,11 @@ on:
         required: false
         default: false
         type: boolean
-    secrets:
-      DOCKERHUB_USERNAME:
-        required: true
-      DOCKERHUB_TOKEN:
-        required: true
+#    secrets:
+#      DOCKERHUB_USERNAME:
+#        required: true
+#      DOCKERHUB_TOKEN:
+#        required: true
 
 jobs:
   # Build binaries, images, SBOMs, and attestations for production or development
@@ -67,20 +67,13 @@ jobs:
         if: ${{ inputs.build-type == 'prod' }}
         run: curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
 
-      - name: Login to Docker Hub # Authenticate to Docker Hub
-        if: ${{ !inputs.dry-run }}
-        uses: docker/login-action@3227f5311cb93ffd14d13e65d8cc400d30f4dd8a
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
       - name: Login to GHCR # Authenticate to GHCR
         if: ${{ !inputs.dry-run }}
         uses: docker/login-action@3227f5311cb93ffd14d13e65d8cc400d30f4dd8a
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ github.token }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@4247c53b304edb39a4e6a0808f415d3eebad450a
@@ -96,7 +89,7 @@ jobs:
           # Skip publishing during dry-run
           args: release --config build/goreleaser/${{ inputs.build-type }}.yml ${{ inputs.build-type == 'dev' && '--snapshot' || '' }} --clean ${{ inputs.dry-run && '--skip=publish' || '' }}
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DRY_RUN: ${{ inputs.dry-run }}
 
       - name: Generate artifact attestation # Generate attestations for prod builds.

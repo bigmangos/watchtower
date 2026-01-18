@@ -46,6 +46,13 @@ type ContainerStatus struct {
 	newContainerID types.ContainerID // New container ID after update.
 }
 
+func NewContainerStatus(containerName, imageName string) *ContainerStatus {
+	return &ContainerStatus{
+		containerName: containerName,
+		imageName:     imageName,
+	}
+}
+
 // ID returns the container ID.
 //
 // Returns:
