@@ -130,8 +130,8 @@ dockers_v2:
   - id: "watchtower-manifest"
     ids: ["watchtower-binary"]
     images:
-      - "nickfedor/watchtower"
-      - "ghcr.io/nicholas-fedor/watchtower"
+#      - "bigmangos/watchtower"
+      - "ghcr.io/bigmangos/watchtower"
     tags:
       - "{{ .Major }}"
       - "{{ .Major }}.{{ .Minor }}"
@@ -162,8 +162,8 @@ dockers_v2:
   - id: "watchtower-amd64"
     ids: ["watchtower-binary"]
     images:
-      - "nickfedor/watchtower"
-      - "ghcr.io/nicholas-fedor/watchtower"
+#      - "bigmangos/watchtower"
+      - "ghcr.io/bigmangos/watchtower"
     tags:
       - "amd64-{{ .Major }}"
       - "amd64-{{ .Major }}.{{ .Minor }}"
@@ -187,8 +187,8 @@ dockers_v2:
   - id: "watchtower-i386"
     ids: ["watchtower-binary"]
     images:
-      - "nickfedor/watchtower"
-      - "ghcr.io/nicholas-fedor/watchtower"
+#      - "bigmangos/watchtower"
+      - "ghcr.io/bigmangos/watchtower"
     tags:
       - "i386-{{ .Major }}"
       - "i386-{{ .Major }}.{{ .Minor }}"
@@ -212,8 +212,8 @@ dockers_v2:
   - id: "watchtower-armhf"
     ids: ["watchtower-binary"]
     images:
-      - "nickfedor/watchtower"
-      - "ghcr.io/nicholas-fedor/watchtower"
+#      - "bigmangos/watchtower"
+      - "ghcr.io/bigmangos/watchtower"
     tags:
       - "armhf-{{ .Major }}"
       - "armhf-{{ .Major }}.{{ .Minor }}"
@@ -237,8 +237,8 @@ dockers_v2:
   - id: "watchtower-arm64v8"
     ids: ["watchtower-binary"]
     images:
-      - "nickfedor/watchtower"
-      - "ghcr.io/nicholas-fedor/watchtower"
+#      - "bigmangos/watchtower"
+      - "ghcr.io/bigmangos/watchtower"
     tags:
       - "arm64v8-{{ .Major }}"
       - "arm64v8-{{ .Major }}.{{ .Minor }}"
@@ -262,8 +262,8 @@ dockers_v2:
   - id: "watchtower-riscv64"
     ids: ["watchtower-binary"]
     images:
-      - "nickfedor/watchtower"
-      - "ghcr.io/nicholas-fedor/watchtower"
+#      - "bigmangos/watchtower"
+      - "ghcr.io/bigmangos/watchtower"
     tags:
       - "riscv64-{{ .Major }}"
       - "riscv64-{{ .Major }}.{{ .Minor }}"
